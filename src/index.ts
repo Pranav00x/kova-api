@@ -6,6 +6,8 @@ import { walletRouter } from "./routes/wallet.js";
 import { vaultRouter } from "./routes/vault.js";
 import { kycRouter } from "./routes/kyc.js";
 import { usersRouter } from "./routes/users.js";
+import { transactionsRouter } from "./routes/transactions.js";
+import { webhooksRouter } from "./routes/webhooks.js";
 
 const app = express();
 app.use(express.json());
@@ -21,6 +23,8 @@ app.use("/wallet", walletRouter);
 app.use("/vault", vaultRouter);
 app.use("/kyc", kycRouter);
 app.use("/users", usersRouter);
+app.use("/transactions", transactionsRouter);
+app.use("/webhooks", webhooksRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {

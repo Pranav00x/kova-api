@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requestOtp, verifyOtp } from "../lib/otp.js";
 import { findOrCreateUser } from "../lib/users.js";
 import { signAccessToken, signRefreshToken } from "../lib/jwt.js";
+import { asyncHandler } from "../lib/asyncHandler.js";
 
 export const authRouter = Router();
 
@@ -14,7 +15,7 @@ const verifySchema = identifierSchema.extend({
   code: z.string().length(6),
 });
 
-authRouter.post("/otp/request", async (req, res) => {
+authRouter.post("/otp/request", asyncHandler(async (req, res) => {
   const parsed = identifierSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "invalid_identifier" });
@@ -23,9 +24,9 @@ authRouter.post("/otp/request", async (req, res) => {
 
   await requestOtp(parsed.data.identifier);
   res.json({ status: "sent" });
-});
+}));
 
-authRouter.post("/otp/verify", async (req, res) => {
+authRouter.post("/otp/verify", asyncHandler(async (req, res) => {
   const parsed = verifySchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "invalid_payload" });
@@ -51,4 +52,4 @@ authRouter.post("/otp/verify", async (req, res) => {
   });
 
   res.json({ accessToken, refreshToken, user: { id: user.id, kycStatus: user.kyc_status } });
-});
+}));
